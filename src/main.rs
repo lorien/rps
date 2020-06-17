@@ -1,23 +1,23 @@
 use std::env;
 use std::process;
 
-fn parse_number(inp: &str) -> u32 {
+fn parse_number(inp: &str) -> u64 {
     let mut ret = inp;
-    let mut mult: u32 = 1;
+    let mut mult: u64 = 1;
     let last_char = inp.chars().last().unwrap();
     if last_char.is_digit(10) {
     } else {
          mult = match last_char {
             'k' => 1024,
-            'm' => 1024_u32.pow(2),
-            'b' => 1024_u32.pow(3),
+            'm' => 1024_u64.pow(2),
+            'b' => 1024_u64.pow(3),
             _ => panic!(format!(
                 "Invalid numeric suffix: {}", last_char
             ))
         };
         ret = &inp[0..(inp.len() - 1)];
     }
-    return ret.parse::<u32>().unwrap() * mult;
+    return ret.parse::<u64>().unwrap() * mult;
 }
 
 fn format_time(inp: f64) -> String {
@@ -36,8 +36,8 @@ fn format_time(inp: f64) -> String {
                 break
             }
             let level = levels.remove(0);
-            if sec > level.0 as f64 {
-                let val = (sec / level.0 as f64) as u32;
+            if sec >= level.0 as f64 {
+                let val = (sec / level.0 as f64) as u64;
                 sec = sec - (val as f64 * level.0 as f64);
                 ret.push_str(&format!("{}{} ", val, level.1));
             }
@@ -52,9 +52,9 @@ fn main() {
         eprintln!("Usage: rps <speed> <amount>");
         process::exit(1);
     }
-    let rps: u32 = parse_number(&args[1]);
-    let amount: u32 = parse_number(&args[2]);
+    let rps: u64 = parse_number(&args[1]);
+    let amount: u64 = parse_number(&args[2]);
     //println!("debug: rps: {}", rps);
     //println!("debug: amount: {}", amount);
-    println!("{}", format_time(amount as f64 / rps as f64))
+    println!("{}", format_time(amount as f64 / rps as f64));
 }
